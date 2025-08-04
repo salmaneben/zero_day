@@ -1,0 +1,84 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# ALX Zero Day Project - Vagrant Configuration
+# This Vagrantfile defines the virtual machine environment for the ALX DevOps curriculum
+
+Vagrant.configure("2") do |config|
+  # Base box configuration
+  config.vm.box = "ubuntu/focal64"
+  config.vm.box_version = "~> 20240821.0.0"
+  
+  # VM hostname and description
+  config.vm.hostname = "alx-zero-day"
+  config.vm.define "alx-ubuntu" do |ubuntu|
+    ubuntu.vm.box = "ubuntu/focal64"
+  end
+
+  # Network configuration
+  # config.vm.network "private_network", ip: "192.168.56.10"
+  # config.vm.network "forwarded_port", guest: 80, host: 8080
+
+  # Shared folder configuration
+  config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
+
+  # Provider-specific configuration
+  config.vm.provider "virtualbox" do |vb|
+    # VM name in VirtualBox
+    vb.name = "ALX-Zero-Day-VM"
+    
+    # Display name in VirtualBox GUI
+    vb.gui = false
+    
+    # Memory allocation (1GB)
+    vb.memory = "1024"
+    
+    # CPU cores
+    vb.cpus = 1
+    
+    # Enable hardware acceleration
+    vb.customize ["modifyvm", :id, "--vram", "12"]
+    vb.customize ["modifyvm", :id, "--accelerate3d", "off"]
+    vb.customize ["modifyvm", :id, "--audio", "none"]
+  end
+
+  # Provisioning script - runs on first vagrant up
+  config.vm.provision "shell", inline: <<-SHELL
+    # Update package list
+    apt-get update
+    
+    # Install essential packages
+    apt-get install -y curl wget git vim tree
+    
+    # Create welcome message
+    echo "Welcome to ALX Zero Day Project!" > /etc/motd
+    echo "Ubuntu 20.04 LTS - DevOps Environment" >> /etc/motd
+    echo "Run 'cd /vagrant' to access your project files" >> /etc/motd
+    
+    # Set timezone
+    timedatectl set-timezone UTC
+    
+    # Display system information
+    echo "=== VM Setup Complete ==="
+    echo "Hostname: $(hostname)"
+    echo "OS: $(lsb_release -d | cut -f2)"
+    echo "Kernel: $(uname -r)"
+    echo "Memory: $(free -h | awk '/^Mem:/ {print $2}')"
+    echo "========================="
+  SHELL
+
+  # Post-up message
+  config.vm.post_up_message = <<-MSG
+    ╔══════════════════════════════════════════════════════════════╗
+    ║                   ALX Zero Day Project                       ║
+    ║                  Ubuntu 20.04 LTS Ready!                    ║
+    ╠══════════════════════════════════════════════════════════════╣
+    ║  Next Steps:                                                 ║
+    ║  1. Run: vagrant ssh                                         ║
+    ║  2. Navigate to: cd /vagrant                                 ║
+    ║  3. Start your DevOps journey!                               ║
+    ║                                                              ║
+    ║  Project files are automatically synced between host & VM    ║
+    ╚══════════════════════════════════════════════════════════════╝
+  MSG
+end

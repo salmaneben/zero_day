@@ -1,0 +1,41 @@
+# Vagrant specific
+.vagrant/
+*.log
+
+# VirtualBox specific
+*.vdi
+*.vmdk
+*.vbox
+*.vbox-prev
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Editor specific
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# ALX specific
+.alx/
+checker/
+
+# SSH keys (security)
+*.pem
+*.key
+id_rsa*
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
